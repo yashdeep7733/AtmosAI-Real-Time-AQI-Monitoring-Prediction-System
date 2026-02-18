@@ -3,6 +3,16 @@
 **AtmosAI** is a full-stack web application that lets users **monitor real-time Air Quality Index (AQI) for any city** and get a **next-hour AQI prediction** using a lightweight AI model. The project demonstrates **API integration, data visualization, and basic machine learning** in an interactive dashboard.
 
 ---
+## Air Quality Index (AQI) Guide
+
+The **Air Quality Index (AQI)** shows how clean or polluted the air is and its health effects.
+
+| AQI Range | Category                        | Health Implications                                                                 |
+|-----------|---------------------------------|-----------------------------------------------------------------------------------|
+| 0 – 50    | Good                            | Air quality is satisfactory; little or no health risk                               |
+| 51 – 100  | Moderate / Satisfactory         | Acceptable; sensitive individuals may be slightly affected                         |
+| 101 – 200 | Unhealthy for Sensitive Groups  | Sensitive people may experience health effects; general public usually fine        |
+| 201 – 300 | Unhealthy                       | Everyone may begin to experience adverse health effects; sensitive groups more affected |
 
 ## Features
 -  **Real-time AQI:** Fetches current AQI from [WAQI API](https://aqicn.org/api/).  
