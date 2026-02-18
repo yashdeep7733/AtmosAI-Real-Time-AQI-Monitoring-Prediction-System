@@ -74,7 +74,6 @@ npm run dev
 3.	Open in browser (usually at http://localhost:5173) and enter a city to check AQI.
 
 ## Future Improvements
-- Train with **real historical AQI data** for more accurate predictions.  
+- Train with **more historical AQI data** for more accurate predictions.  
 - Predict **multi-hour or daily AQI trends**.  
 - Include **weather and pollution features** for smarter predictions.  
-- Deploy on **Vercel, Render, or Heroku** for public access.
