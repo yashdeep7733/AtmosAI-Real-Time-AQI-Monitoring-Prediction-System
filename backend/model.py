@@ -1,8 +1,9 @@
 import requests
 import pickle
 import numpy as np
+import os
 
-API_KEY = "5ad9f4053c8f89d8e6c3603963fec48b3556b4a6"  # your WAQI API key
+API_KEY = os.getenv("API_KEY") # your WAQI API key from .env
 CITY = "jaipur"  # change if you want another city
 
 # Fetch current AQI from WAQI API
