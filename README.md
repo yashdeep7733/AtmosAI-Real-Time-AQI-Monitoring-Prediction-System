@@ -41,7 +41,7 @@ The **Air Quality Index (AQI)** shows how clean or polluted the air is and its h
 1. Clone the repo:
 ```bash
 git clone https://github.com/yashdeep7733/AtmosAI-Real-Time-AQI-Monitoring-Prediction-System.git
-cd AtmosAI/backend
+cd AtmosAI-Real-Time-AQI-Monitoring-Prediction-System/backend
 ```
 2.	Create a virtual environment and activate it:
 ```bash
