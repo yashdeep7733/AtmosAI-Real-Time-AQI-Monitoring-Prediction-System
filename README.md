@@ -1,4 +1,4 @@
-# 🌫️ AtmosAI – Real-Time AQI Monitoring & Prediction System
+# 🌫️ AtmosAI: Real-Time AQI Monitoring & Prediction System
 
 **AtmosAI** is a full-stack web application that lets users **monitor real-time Air Quality Index (AQI) for any city** and get a **next-hour AQI prediction** using a lightweight AI model. The project demonstrates **API integration, data visualization, and basic machine learning** in an interactive dashboard.
 
