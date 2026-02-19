@@ -33,7 +33,7 @@ export default function App() {
     setAqiData(null);
 
     axios
-      .get(`http://127.0.0.1:5000/aqi?city=${city}`)
+      .get(`https://atmosai-8mem.onrender.com/aqi?city=${city}`)
       .then((res) => setAqiData(res.data))
       .catch(() =>
         setAqiData({ error: "Server not reachable", current_aqi: null })
