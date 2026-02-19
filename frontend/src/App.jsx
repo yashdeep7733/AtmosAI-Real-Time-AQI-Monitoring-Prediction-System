@@ -17,6 +17,15 @@ export default function App() {
   const [aqiData, setAqiData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const getAQIAlert = (aqi) => {
+    if (aqi <= 50) return "Good : Air is healthy.";
+    if (aqi <= 140) return "Decent : Air quality is okay enough.";
+    if (aqi <= 160) return "Moderate : Air is okay, sensitive people be cautious.";
+    if (aqi <= 200) return "Unhealthy : Limit outdoor activity.";
+    if (aqi <= 250) return "Very Unhealthy : Avoid outdoor activity, wear a mask if necessary.";
+    return "Hazardous : Stay indoors.";
+  };
+
   const fetchAQI = () => {
     if (!city) return;
 
@@ -32,35 +41,61 @@ export default function App() {
       .finally(() => setLoading(false));
   };
 
-  const chartData =
-    aqiData && aqiData.trend
-      ? {
-          labels: aqiData.trend.map((_, i) => i + 1),
-          datasets: [
-            {
-              label: "AQI",
-              data: aqiData.trend,
-              borderColor: "white",
-              backgroundColor: "lightblue",
-              tension: 0.4,
-              fill: false,
-            },
-          ],
-        }
-      : {
-          labels: ["Current", "Predicted (1hr)"],
-          datasets: [
-            {
-              label: "AQI",
-              data:
-                aqiData && aqiData.current_aqi !== null
-                  ? [aqiData.current_aqi, aqiData.predicted_aqi]
-                  : [],
-              borderColor: "white",
-              backgroundColor: "lightblue",
-            },
-          ],
-        };
+  const generateSmoothTrend = (current, predicted, steps = 10) => {
+    const trend = [];
+    for (let i = 0; i <= steps; i++) {
+      trend.push(current + ((predicted - current) / steps) * i);
+    }
+    return trend;
+  };
+
+  // Determine Y-axis min and max for better precision
+  const getYAxisBounds = (data) => {
+    if (!data || data.length === 0) return { min: 0, max: 100 };
+    const minVal = Math.min(...data);
+    const maxVal = Math.max(...data);
+    const padding = (maxVal - minVal) * 0.2 || 5; // 20% padding or at least 5
+    return { min: minVal - padding, max: maxVal + padding };
+  };
+
+  // Preparing the  chart data
+  let trendData = [];
+  if (aqiData) {
+    if (aqiData.trend) {
+      trendData = aqiData.trend;
+    } else if (aqiData.current_aqi !== null) {
+      trendData = generateSmoothTrend(
+        aqiData.current_aqi,
+        Number(aqiData.predicted_aqi),
+        20
+      );
+    }
+  }
+
+  const chartData = {
+    labels: trendData.map((_, i) => i + 1),
+    datasets: [
+      {
+        label: "AQI",
+        data: trendData,
+        borderColor: "white",
+        backgroundColor: "lightblue",
+        tension: 0.4,
+        fill: false,
+      },
+    ],
+  };
+
+  const yBounds = getYAxisBounds(trendData);
+
+  const chartOptions = {
+    scales: {
+      y: {
+        min: yBounds.min,
+        max: yBounds.max,
+      },
+    },
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
@@ -84,12 +119,16 @@ export default function App() {
         <div>
           <h2>City: {aqiData.city}</h2>
           <h3>Current AQI: {aqiData.current_aqi}</h3>
-          <h3>
-            Predicted AQI (1hr): {Number(aqiData.predicted_aqi).toFixed(2)}
-          </h3>
+          <h3>Predicted AQI (1hr): {Number(aqiData.predicted_aqi).toFixed(2)}</h3>
 
-          <div style={{ width: "400px", margin: "auto" }}>
-            <Line data={chartData} />
+          {/* AQI Recommendation */}
+          <div style={{ marginTop: "15px", color: "orange", fontWeight: "bold" }}>
+            {getAQIAlert(aqiData.current_aqi)}
+          </div>
+
+          {/* AQI Chart */}
+          <div style={{ width: "400px", margin: "auto", marginTop: "20px" }}>
+            <Line data={chartData} options={chartOptions} />
           </div>
         </div>
       )}
