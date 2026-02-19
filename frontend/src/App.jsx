@@ -61,7 +61,7 @@ export default function App() {
       />
       <button onClick={fetchAQI}>Check AQI</button>
 
-      {loading && <h3>Loading...</h3>}
+      {loading && <div className="shimmer"></div>}
 
       {aqiData && aqiData.error && (
         <h3 style={{ color: "red" }}>{aqiData.error}</h3>
