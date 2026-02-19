@@ -7,17 +7,16 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Filler,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler);
 
 export default function App() {
-  // --- States ---
   const [city, setCity] = useState("");
   const [aqiData, setAqiData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // --- Fetch AQI ---
   const fetchAQI = () => {
     if (!city) return;
 
@@ -25,7 +24,7 @@ export default function App() {
     setAqiData(null);
 
     axios
-      .get(`https://atmosai-8mem.onrender.com/aqi?city=${city}`)
+      .get(`http://127.0.0.1:5000/aqi?city=${city}`)
       .then((res) => setAqiData(res.data))
       .catch(() =>
         setAqiData({ error: "Server not reachable", current_aqi: null })
@@ -33,22 +32,36 @@ export default function App() {
       .finally(() => setLoading(false));
   };
 
-  const chartData = {
-    labels: ["Current", "Predicted (1hr)"],
-    datasets: [
-      {
-        label: "AQI",
-        data:
-          aqiData && aqiData.current_aqi !== null
-            ? [aqiData.current_aqi, aqiData.predicted_aqi]
-            : [],
-        borderColor: "white",
-        backgroundColor: "lightblue",
-      },
-    ],
-  };
+  const chartData =
+    aqiData && aqiData.trend
+      ? {
+          labels: aqiData.trend.map((_, i) => i + 1),
+          datasets: [
+            {
+              label: "AQI",
+              data: aqiData.trend,
+              borderColor: "white",
+              backgroundColor: "lightblue",
+              tension: 0.4,
+              fill: false,
+            },
+          ],
+        }
+      : {
+          labels: ["Current", "Predicted (1hr)"],
+          datasets: [
+            {
+              label: "AQI",
+              data:
+                aqiData && aqiData.current_aqi !== null
+                  ? [aqiData.current_aqi, aqiData.predicted_aqi]
+                  : [],
+              borderColor: "white",
+              backgroundColor: "lightblue",
+            },
+          ],
+        };
 
-  // --- Stuff ---
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>AtmosAI</h1>
