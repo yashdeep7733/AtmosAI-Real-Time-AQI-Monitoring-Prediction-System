@@ -3,8 +3,9 @@ import pickle
 import numpy as np
 import os
 
-API_KEY = os.getenv("API_KEY") # your WAQI API key from .env
-CITY = "jaipur"  # change if you want another city
+# Load the api key from environment variable
+API_KEY = os.getenv("API_KEY")  # Make sure to set API_KEY in your .env or environment
+CITY = "jaipur"  # Change city if needed
 
 # Fetch current AQI from WAQI API
 url = f"https://api.waqi.info/feed/{CITY}/?token={API_KEY}"
@@ -16,12 +17,25 @@ if data["status"] != "ok":
 
 current_aqi = data["data"]["aqi"]
 
-# Simulate last 24-hour AQI trend around current AQI
-np.random.seed(42)
-X = np.array([current_aqi + np.random.randint(-10, 10) for _ in range(24)])
-y = X[1:] - X[:-1]  # actual next-hour change
+# Get real past 24-hour AQI from WAQI forecast if available
+past_aqi = []
+if "forecast" in data["data"] and "hourly" in data["data"]["forecast"]:
+    # Use PM2.5 hourly data if available
+    hourly_pm25 = data["data"]["forecast"]["hourly"].get("pm25", [])
+    for h in hourly_pm25[:24]:  # take last 24 hours
+        past_aqi.append(h['avg'])
 
-# Train linear regression model (simple gradient descent)
+# If past data not available, fallback to simulated values
+if past_aqi:
+    X = np.array(past_aqi)
+else:
+    np.random.seed(42)
+    X = np.array([current_aqi + np.random.randint(-10, 10) for _ in range(24)])
+
+# Compute next-hour changes
+y = X[1:] - X[:-1]
+
+# Linear regression via gradient descent
 X_train = X[:-1]
 w = 0
 b = 0
@@ -36,7 +50,7 @@ for _ in range(epochs):
     w -= lr * dw
     b -= lr * db
 
-# Save model for app.py
+# Save the trained model
 pickle.dump({"w": w, "b": b}, open("aqi_model.pkl", "wb"))
 
 if __name__ == "__main__":
