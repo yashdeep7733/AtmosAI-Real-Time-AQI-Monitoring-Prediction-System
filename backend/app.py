@@ -58,6 +58,11 @@ def get_aqi():
             "history": None,
             "error": "Failed to fetch AQI data"
         })
+    
+# Ping for server up check
+@app.route("/ping")
+def ping():
+    return jsonify({"status": "ok"})
 
 
 if __name__ == "__main__":
