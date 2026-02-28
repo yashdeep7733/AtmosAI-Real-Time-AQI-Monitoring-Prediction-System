@@ -59,6 +59,10 @@ def get_aqi():
             "error": "Failed to fetch AQI data"
         })
     
+@app.route("/")
+def home():
+    return jsonify({"status": "AtmosAI backend running"})
+    
 # Ping for server up check
 @app.route("/ping")
 def ping():
