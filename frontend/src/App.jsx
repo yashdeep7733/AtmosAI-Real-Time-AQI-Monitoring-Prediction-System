@@ -26,20 +26,30 @@ export default function App() {
     return "Hazardous : Stay indoors.";
   };
 
-  const fetchAQI = () => {
-    if (!city) return;
+const fetchAQI = () => {
+  if (!city) return;
 
-    setLoading(true);
-    setAqiData(null);
+  setLoading(true);
+  setAqiData(null);
 
-    axios
-      .get(`https://atmosai-8mem.onrender.com/aqi?city=${city}`)
-      .then((res) => setAqiData(res.data))
-      .catch(() =>
-        setAqiData({ error: "Server not reachable", current_aqi: null })
-      )
-      .finally(() => setLoading(false));
-  };
+  axios
+    .get(`http://127.0.0.1:8000/aqi?city=${city}`)
+    .then((res) => {
+      setAqiData(res.data);
+    })
+    .catch((err) => {
+      if (err.response) {
+        // Backend returned error (like 500 or 400)
+        setAqiData(err.response.data);
+      } else if (err.request) {
+        // Backend not running
+        setAqiData({ error: "Backend not running", current_aqi: null });
+      } else {
+        setAqiData({ error: "Unexpected error occurred", current_aqi: null });
+      }
+    })
+    .finally(() => setLoading(false));
+};
 
   const generateSmoothTrend = (current, predicted, steps = 10) => {
     const trend = [];
