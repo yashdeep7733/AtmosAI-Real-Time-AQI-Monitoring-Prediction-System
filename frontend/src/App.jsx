@@ -129,7 +129,7 @@ const fetchAQI = () => {
         <div>
           <h2>City: {aqiData.city}</h2>
           <h3>Current AQI: {aqiData.current_aqi}</h3>
-          <h3>Predicted AQI (1hr): {Number(aqiData.predicted_aqi).toFixed(2)}</h3>
+          <h3>Estimated AQI Trend: {Number(aqiData.predicted_aqi).toFixed(2)}</h3>
 
           {/* AQI Recommendation */}
           <div style={{ marginTop: "15px", color: "orange", fontWeight: "bold" }}>
