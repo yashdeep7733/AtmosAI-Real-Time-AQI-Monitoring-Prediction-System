@@ -48,9 +48,7 @@ def train_and_predict(city, api_key):
     next_time = len(y)
     predicted_aqi = float(w * next_time + b)
 
-    # -------------------------
     # Clamp unrealistic jumps
-    # -------------------------
     if abs(predicted_aqi - current_aqi) > 40:
         predicted_aqi = current_aqi + np.sign(predicted_aqi - current_aqi) * 40
 
